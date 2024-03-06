@@ -1,0 +1,19 @@
+{
+    "first_name": "Alice",
+    "last_name": "Smith",
+    "age": 30,
+    "address": [{
+      "street": "123 Main St",
+      "city": "Bradenton",
+      "country": "United States"
+    },
+    { 
+      "street": "555 Main St",
+      "city": "Bradenton",
+      "country": "United States"
+    }],
+    "phone_numbers": [
+      "+1 123-456-7890",
+      "+1 987-654-3210"
+    ]
+  }

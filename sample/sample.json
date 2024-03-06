@@ -1,0 +1,1083 @@
+{
+	"nodes": [
+	  {
+		"width": 300,
+		"height": 385,
+		"id": "openAIFunctionAgent_0",
+		"position": {
+		  "x": 1334.5578599982794,
+		  "y": 682.7641840305056
+		},
+		"type": "customNode",
+		"data": {
+		  "label": "OpenAI Function Agent",
+		  "name": "openAIFunctionAgent",
+		  "version": 3,
+		  "type": "AgentExecutor",
+		  "category": "Agents",
+		  "icon": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/agents/OpenAIFunctionAgent/function.svg",
+		  "description": "An agent that uses Function Calling to pick the tool and args to call",
+		  "baseClasses": [
+			"AgentExecutor",
+			"BaseChain",
+			"Runnable"
+		  ],
+		  "inputs": {
+			"tools": [
+			  "{{customTool_0.data.instance}}",
+			  "{{retrieverTool_0.data.instance}}"
+			],
+			"memory": "{{RedisBackedChatMemory_0.data.instance}}",
+			"model": "{{chatOpenAI_0.data.instance}}",
+			"systemMessage": "As TACE virtual assistance, my role is to create infrastructure using Terraform. I'll strictly adhere to the following rules:\n\nI'll prompt the user for the necessary Terraform variables based on the connected Github Repositories. This means that when starting a new infrastructure project, I'll ask for specific information that will be used by Terraform to configure and deploy resources in the cloud.\n\nAfter gathering user input, I'll generate HashiCorp Configuration Language (HCL) code, which is the configuration language used by Terraform. This HCL code will be presented to the user for review and approval. This step is important to ensure that the configurations are correct before deployment.\n\nAlways provide the HCL code and ask for the user approval before creating any new Terraform Module. For each new module the user MUST approve before you create it. \n\nIndependently of how many services the user asks for, the user MUST see the HCL code and approve BEFORE I start the deployment. I am strictly forbidden to deploy without the user approval.\n\nEach service has its own module folder in sentry-compliance-logic in aws/terraform/modules. Make sure to get the INPUT variables there for each requested service.\n\nI will ALWAYS refer to bluesentry/sentry-compliance-logic private Terraform module documentation to confirm the required inputs and outputs for setting up the infrastructure.\n\nI will ALWAYS make sure to get the required INPUTS from the README of the module or service that the user is asking for. I will not use INPUTS from other modules, its strictly important that I don't mix them.\n\nEach module have REQUIRED AND OPTIONAL INPUTS. You must ask the User for the Required ones so you can create the HCL code.\n\nMake sure that the INPUTS you are referencing correspond to the module that the user is requesting.\n\nOnce the user has reviewed and approved the HCL code, I'll proceed to run a Custom Tool called n8n-webhook. This step is automatically performed after user approval and is responsible for initiating the infrastructure deployment process as defined in the HCL code.\n\nThroughout the process, I won't explicitly mention that I'm using a Custom Tool or its specific name. This is to simplify the interaction with the user, who doesn't need to concern themselves with the technical details of the implementation.\n\nWhen creating the HCL code, I'll follow some specific guidelines:\n\nI'll always use the Terraform tool to retrieve the source of Terraform Modules. Modules are sets of reusable resources that make it easier to configure and deploy infrastructure.\nI'll prioritize using Terraform modules over individual resources, as this promotes reuse and consistency in infrastructure configuration.\nI'll prefer using our Private Modules whenever possible. These are internally maintained module sets, ensuring greater control and security.\nSince our modules are private, there's no need to specify a specific version, simplifying the configuration process.\nTo ensure the uniqueness of module names, I may append the resource name provided by the user as part of the module name.\nThe private module source will follow the following pattern: git::https://github.com/bluesentry/sentry-compliance-logic.git//aws/terraform/modules/<module_name>. This path MUST BE valid and EXIST in sentry-compliance-logic Github Repo.\n\nFor S3 use https://github.com/bluesentry/sentry-compliance-logic.git//aws/terraform/modules/s3"
+		  },
+		  "filePath": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/agents/OpenAIFunctionAgent/OpenAIFunctionAgent.js",
+		  "inputAnchors": [
+			{
+			  "label": "Allowed Tools",
+			  "name": "tools",
+			  "type": "Tool",
+			  "list": true,
+			  "id": "openAIFunctionAgent_0-input-tools-Tool"
+			},
+			{
+			  "label": "Memory",
+			  "name": "memory",
+			  "type": "BaseChatMemory",
+			  "id": "openAIFunctionAgent_0-input-memory-BaseChatMemory"
+			},
+			{
+			  "label": "OpenAI/Azure Chat Model",
+			  "name": "model",
+			  "type": "BaseChatModel",
+			  "id": "openAIFunctionAgent_0-input-model-BaseChatModel"
+			}
+		  ],
+		  "inputParams": [
+			{
+			  "label": "System Message",
+			  "name": "systemMessage",
+			  "type": "string",
+			  "rows": 4,
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "openAIFunctionAgent_0-input-systemMessage-string"
+			}
+		  ],
+		  "outputs": {},
+		  "outputAnchors": [
+			{
+			  "id": "openAIFunctionAgent_0-output-openAIFunctionAgent-AgentExecutor|BaseChain|Runnable",
+			  "name": "openAIFunctionAgent",
+			  "label": "AgentExecutor",
+			  "type": "AgentExecutor | BaseChain | Runnable"
+			}
+		  ],
+		  "id": "openAIFunctionAgent_0",
+		  "selected": false
+		},
+		"selected": true,
+		"positionAbsolute": {
+		  "x": 1334.5578599982794,
+		  "y": 682.7641840305056
+		},
+		"dragging": false
+	  },
+	  {
+		"width": 300,
+		"height": 576,
+		"id": "chatOpenAI_0",
+		"position": {
+		  "x": -362.2490026103817,
+		  "y": 856.4367115233607
+		},
+		"type": "customNode",
+		"data": {
+		  "label": "ChatOpenAI",
+		  "name": "chatOpenAI",
+		  "version": 2,
+		  "type": "ChatOpenAI",
+		  "icon": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/chatmodels/ChatOpenAI/openai.svg",
+		  "category": "Chat Models",
+		  "description": "Wrapper around OpenAI large language models that use the Chat endpoint",
+		  "baseClasses": [
+			"ChatOpenAI",
+			"BaseChatModel",
+			"BaseLanguageModel",
+			"Runnable"
+		  ],
+		  "credential": "2843f963-79cd-4c2b-80f4-377d660eb26c",
+		  "inputs": {
+			"cache": "",
+			"modelName": "gpt-4-1106-preview",
+			"temperature": "0",
+			"maxTokens": "",
+			"topP": "",
+			"frequencyPenalty": "",
+			"presencePenalty": "",
+			"timeout": "",
+			"basepath": "",
+			"baseOptions": ""
+		  },
+		  "filePath": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/chatmodels/ChatOpenAI/ChatOpenAI.js",
+		  "inputAnchors": [
+			{
+			  "label": "Cache",
+			  "name": "cache",
+			  "type": "BaseCache",
+			  "optional": true,
+			  "id": "chatOpenAI_0-input-cache-BaseCache"
+			}
+		  ],
+		  "inputParams": [
+			{
+			  "label": "Connect Credential",
+			  "name": "credential",
+			  "type": "credential",
+			  "credentialNames": [
+				"openAIApi"
+			  ],
+			  "id": "chatOpenAI_0-input-credential-credential"
+			},
+			{
+			  "label": "Model Name",
+			  "name": "modelName",
+			  "type": "options",
+			  "options": [
+				{
+				  "label": "gpt-4",
+				  "name": "gpt-4"
+				},
+				{
+				  "label": "gpt-4-1106-preview",
+				  "name": "gpt-4-1106-preview"
+				},
+				{
+				  "label": "gpt-4-vision-preview",
+				  "name": "gpt-4-vision-preview"
+				},
+				{
+				  "label": "gpt-4-0613",
+				  "name": "gpt-4-0613"
+				},
+				{
+				  "label": "gpt-4-32k",
+				  "name": "gpt-4-32k"
+				},
+				{
+				  "label": "gpt-4-32k-0613",
+				  "name": "gpt-4-32k-0613"
+				},
+				{
+				  "label": "gpt-3.5-turbo",
+				  "name": "gpt-3.5-turbo"
+				},
+				{
+				  "label": "gpt-3.5-turbo-1106",
+				  "name": "gpt-3.5-turbo-1106"
+				},
+				{
+				  "label": "gpt-3.5-turbo-0613",
+				  "name": "gpt-3.5-turbo-0613"
+				},
+				{
+				  "label": "gpt-3.5-turbo-16k",
+				  "name": "gpt-3.5-turbo-16k"
+				},
+				{
+				  "label": "gpt-3.5-turbo-16k-0613",
+				  "name": "gpt-3.5-turbo-16k-0613"
+				}
+			  ],
+			  "default": "gpt-3.5-turbo",
+			  "optional": true,
+			  "id": "chatOpenAI_0-input-modelName-options"
+			},
+			{
+			  "label": "Temperature",
+			  "name": "temperature",
+			  "type": "number",
+			  "step": 0.1,
+			  "default": 0.9,
+			  "optional": true,
+			  "id": "chatOpenAI_0-input-temperature-number"
+			},
+			{
+			  "label": "Max Tokens",
+			  "name": "maxTokens",
+			  "type": "number",
+			  "step": 1,
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "chatOpenAI_0-input-maxTokens-number"
+			},
+			{
+			  "label": "Top Probability",
+			  "name": "topP",
+			  "type": "number",
+			  "step": 0.1,
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "chatOpenAI_0-input-topP-number"
+			},
+			{
+			  "label": "Frequency Penalty",
+			  "name": "frequencyPenalty",
+			  "type": "number",
+			  "step": 0.1,
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "chatOpenAI_0-input-frequencyPenalty-number"
+			},
+			{
+			  "label": "Presence Penalty",
+			  "name": "presencePenalty",
+			  "type": "number",
+			  "step": 0.1,
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "chatOpenAI_0-input-presencePenalty-number"
+			},
+			{
+			  "label": "Timeout",
+			  "name": "timeout",
+			  "type": "number",
+			  "step": 1,
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "chatOpenAI_0-input-timeout-number"
+			},
+			{
+			  "label": "BasePath",
+			  "name": "basepath",
+			  "type": "string",
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "chatOpenAI_0-input-basepath-string"
+			},
+			{
+			  "label": "BaseOptions",
+			  "name": "baseOptions",
+			  "type": "json",
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "chatOpenAI_0-input-baseOptions-json"
+			}
+		  ],
+		  "outputs": {},
+		  "outputAnchors": [
+			{
+			  "id": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+			  "name": "chatOpenAI",
+			  "label": "ChatOpenAI",
+			  "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable"
+			}
+		  ],
+		  "id": "chatOpenAI_0",
+		  "selected": false
+		},
+		"selected": false,
+		"positionAbsolute": {
+		  "x": -362.2490026103817,
+		  "y": 856.4367115233607
+		},
+		"dragging": false
+	  },
+	  {
+		"width": 300,
+		"height": 278,
+		"id": "customTool_0",
+		"position": {
+		  "x": -356.3857389312329,
+		  "y": 171.64423074916078
+		},
+		"type": "customNode",
+		"data": {
+		  "loadMethods": {},
+		  "label": "Custom Tool",
+		  "name": "customTool",
+		  "version": 1,
+		  "type": "CustomTool",
+		  "icon": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/tools/CustomTool/customtool.svg",
+		  "category": "Tools",
+		  "description": "Use custom tool you've created in Flowise within chatflow",
+		  "inputs": {
+			"selectedTool": "f5229f66-de53-40e1-8194-3af3fd51533e"
+		  },
+		  "baseClasses": [
+			"CustomTool",
+			"Tool",
+			"StructuredTool",
+			"Runnable"
+		  ],
+		  "filePath": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/tools/CustomTool/CustomTool.js",
+		  "inputAnchors": [],
+		  "inputParams": [
+			{
+			  "label": "Select Tool",
+			  "name": "selectedTool",
+			  "type": "asyncOptions",
+			  "loadMethod": "listTools",
+			  "id": "customTool_0-input-selectedTool-asyncOptions"
+			}
+		  ],
+		  "outputs": {},
+		  "outputAnchors": [
+			{
+			  "id": "customTool_0-output-customTool-CustomTool|Tool|StructuredTool|Runnable",
+			  "name": "customTool",
+			  "label": "CustomTool",
+			  "type": "CustomTool | Tool | StructuredTool | Runnable"
+			}
+		  ],
+		  "id": "customTool_0",
+		  "selected": false
+		},
+		"selected": false,
+		"positionAbsolute": {
+		  "x": -356.3857389312329,
+		  "y": 171.64423074916078
+		},
+		"dragging": false
+	  },
+	  {
+		"width": 300,
+		"height": 506,
+		"id": "retrieverTool_0",
+		"position": {
+		  "x": 557.6806476918404,
+		  "y": -399.9583833018118
+		},
+		"type": "customNode",
+		"data": {
+		  "label": "Retriever Tool",
+		  "name": "retrieverTool",
+		  "version": 1,
+		  "type": "RetrieverTool",
+		  "icon": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/tools/RetrieverTool/retrievertool.svg",
+		  "category": "Tools",
+		  "description": "Use a retriever as allowed tool for agent",
+		  "baseClasses": [
+			"RetrieverTool",
+			"DynamicTool",
+			"Tool",
+			"StructuredTool",
+			"Runnable"
+		  ],
+		  "inputs": {
+			"name": "Terraform",
+			"description": "Use this tool as your knowledge base for creating Terraform Modules. \nYou will find the documentation for each module in the README.md file inside each module folder.\n\n",
+			"retriever": "{{qdrant_0.data.instance}}"
+		  },
+		  "filePath": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/tools/RetrieverTool/RetrieverTool.js",
+		  "inputAnchors": [
+			{
+			  "label": "Retriever",
+			  "name": "retriever",
+			  "type": "BaseRetriever",
+			  "id": "retrieverTool_0-input-retriever-BaseRetriever"
+			}
+		  ],
+		  "inputParams": [
+			{
+			  "label": "Retriever Name",
+			  "name": "name",
+			  "type": "string",
+			  "placeholder": "search_state_of_union",
+			  "id": "retrieverTool_0-input-name-string"
+			},
+			{
+			  "label": "Retriever Description",
+			  "name": "description",
+			  "type": "string",
+			  "description": "When should agent uses to retrieve documents",
+			  "rows": 3,
+			  "placeholder": "Searches and returns documents regarding the state-of-the-union.",
+			  "id": "retrieverTool_0-input-description-string"
+			}
+		  ],
+		  "outputs": {},
+		  "outputAnchors": [
+			{
+			  "id": "retrieverTool_0-output-retrieverTool-RetrieverTool|DynamicTool|Tool|StructuredTool|Runnable",
+			  "name": "retrieverTool",
+			  "label": "RetrieverTool",
+			  "type": "RetrieverTool | DynamicTool | Tool | StructuredTool | Runnable"
+			}
+		  ],
+		  "id": "retrieverTool_0",
+		  "selected": false
+		},
+		"selected": false,
+		"positionAbsolute": {
+		  "x": 557.6806476918404,
+		  "y": -399.9583833018118
+		},
+		"dragging": false
+	  },
+	  {
+		"width": 300,
+		"height": 675,
+		"id": "github_0",
+		"position": {
+		  "x": -771.038498294044,
+		  "y": -1192.9513688093282
+		},
+		"type": "customNode",
+		"data": {
+		  "label": "Github",
+		  "name": "github",
+		  "version": 2,
+		  "type": "Document",
+		  "icon": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/documentloaders/Github/github.svg",
+		  "category": "Document Loaders",
+		  "description": "Load data from a GitHub repository",
+		  "baseClasses": [
+			"Document"
+		  ],
+		  "credential": "c0d11648-e3e2-4d5e-aaa4-37ad757495d0",
+		  "inputs": {
+			"repoLink": "https://github.com/bluesentry/sentry-compliance-logic",
+			"branch": "main",
+			"recursive": true,
+			"maxConcurrency": "",
+			"ignorePath": "[ \"/azure/*\", \"/utility/*\", \"/aws/terraform/deployments/*\" ]",
+			"maxRetries": "",
+			"textSplitter": "{{tokenTextSplitter_0.data.instance}}",
+			"metadata": ""
+		  },
+		  "filePath": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/documentloaders/Github/Github.js",
+		  "inputAnchors": [
+			{
+			  "label": "Text Splitter",
+			  "name": "textSplitter",
+			  "type": "TextSplitter",
+			  "optional": true,
+			  "id": "github_0-input-textSplitter-TextSplitter"
+			}
+		  ],
+		  "inputParams": [
+			{
+			  "label": "Connect Credential",
+			  "name": "credential",
+			  "type": "credential",
+			  "description": "Only needed when accessing private repo",
+			  "optional": true,
+			  "credentialNames": [
+				"githubApi"
+			  ],
+			  "id": "github_0-input-credential-credential"
+			},
+			{
+			  "label": "Repo Link",
+			  "name": "repoLink",
+			  "type": "string",
+			  "placeholder": "https://github.com/FlowiseAI/Flowise",
+			  "id": "github_0-input-repoLink-string"
+			},
+			{
+			  "label": "Branch",
+			  "name": "branch",
+			  "type": "string",
+			  "default": "main",
+			  "id": "github_0-input-branch-string"
+			},
+			{
+			  "label": "Recursive",
+			  "name": "recursive",
+			  "type": "boolean",
+			  "optional": true,
+			  "id": "github_0-input-recursive-boolean"
+			},
+			{
+			  "label": "Max Concurrency",
+			  "name": "maxConcurrency",
+			  "type": "number",
+			  "step": 1,
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "github_0-input-maxConcurrency-number"
+			},
+			{
+			  "label": "Ignore Paths",
+			  "name": "ignorePath",
+			  "description": "An array of paths to be ignored",
+			  "placeholder": "[\"*.md\"]",
+			  "type": "string",
+			  "rows": 4,
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "github_0-input-ignorePath-string"
+			},
+			{
+			  "label": "Max Retries",
+			  "name": "maxRetries",
+			  "description": "The maximum number of retries that can be made for a single call, with an exponential backoff between each attempt. Defaults to 2.",
+			  "type": "number",
+			  "step": 1,
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "github_0-input-maxRetries-number"
+			},
+			{
+			  "label": "Metadata",
+			  "name": "metadata",
+			  "type": "json",
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "github_0-input-metadata-json"
+			}
+		  ],
+		  "outputs": {},
+		  "outputAnchors": [
+			{
+			  "id": "github_0-output-github-Document",
+			  "name": "github",
+			  "label": "Document",
+			  "type": "Document"
+			}
+		  ],
+		  "id": "github_0",
+		  "selected": false
+		},
+		"selected": false,
+		"positionAbsolute": {
+		  "x": -771.038498294044,
+		  "y": -1192.9513688093282
+		},
+		"dragging": false
+	  },
+	  {
+		"width": 300,
+		"height": 330,
+		"id": "openAIEmbeddings_0",
+		"position": {
+		  "x": -774.2544912509936,
+		  "y": -477.89977860610077
+		},
+		"type": "customNode",
+		"data": {
+		  "label": "OpenAI Embeddings",
+		  "name": "openAIEmbeddings",
+		  "version": 1,
+		  "type": "OpenAIEmbeddings",
+		  "icon": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/embeddings/OpenAIEmbedding/openai.svg",
+		  "category": "Embeddings",
+		  "description": "OpenAI API to generate embeddings for a given text",
+		  "baseClasses": [
+			"OpenAIEmbeddings",
+			"Embeddings"
+		  ],
+		  "credential": "2843f963-79cd-4c2b-80f4-377d660eb26c",
+		  "inputs": {
+			"stripNewLines": "",
+			"batchSize": "",
+			"timeout": "",
+			"basepath": ""
+		  },
+		  "filePath": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/embeddings/OpenAIEmbedding/OpenAIEmbedding.js",
+		  "inputAnchors": [],
+		  "inputParams": [
+			{
+			  "label": "Connect Credential",
+			  "name": "credential",
+			  "type": "credential",
+			  "credentialNames": [
+				"openAIApi"
+			  ],
+			  "id": "openAIEmbeddings_0-input-credential-credential"
+			},
+			{
+			  "label": "Strip New Lines",
+			  "name": "stripNewLines",
+			  "type": "boolean",
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "openAIEmbeddings_0-input-stripNewLines-boolean"
+			},
+			{
+			  "label": "Batch Size",
+			  "name": "batchSize",
+			  "type": "number",
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "openAIEmbeddings_0-input-batchSize-number"
+			},
+			{
+			  "label": "Timeout",
+			  "name": "timeout",
+			  "type": "number",
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "openAIEmbeddings_0-input-timeout-number"
+			},
+			{
+			  "label": "BasePath",
+			  "name": "basepath",
+			  "type": "string",
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "openAIEmbeddings_0-input-basepath-string"
+			}
+		  ],
+		  "outputs": {},
+		  "outputAnchors": [
+			{
+			  "id": "openAIEmbeddings_0-output-openAIEmbeddings-OpenAIEmbeddings|Embeddings",
+			  "name": "openAIEmbeddings",
+			  "label": "OpenAIEmbeddings",
+			  "type": "OpenAIEmbeddings | Embeddings"
+			}
+		  ],
+		  "id": "openAIEmbeddings_0",
+		  "selected": false
+		},
+		"selected": false,
+		"positionAbsolute": {
+		  "x": -774.2544912509936,
+		  "y": -477.89977860610077
+		},
+		"dragging": false
+	  },
+	  {
+		"width": 300,
+		"height": 473,
+		"id": "tokenTextSplitter_0",
+		"position": {
+		  "x": -1377.8985466680444,
+		  "y": -938.3798019207447
+		},
+		"type": "customNode",
+		"data": {
+		  "label": "Token Text Splitter",
+		  "name": "tokenTextSplitter",
+		  "version": 1,
+		  "type": "TokenTextSplitter",
+		  "icon": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/textsplitters/TokenTextSplitter/tiktoken.svg",
+		  "category": "Text Splitters",
+		  "description": "Splits a raw text string by first converting the text into BPE tokens, then split these tokens into chunks and convert the tokens within a single chunk back into text.",
+		  "baseClasses": [
+			"TokenTextSplitter",
+			"TextSplitter",
+			"BaseDocumentTransformer",
+			"Runnable"
+		  ],
+		  "inputs": {
+			"encodingName": "gpt2",
+			"chunkSize": 1000,
+			"chunkOverlap": ""
+		  },
+		  "filePath": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/textsplitters/TokenTextSplitter/TokenTextSplitter.js",
+		  "inputAnchors": [],
+		  "inputParams": [
+			{
+			  "label": "Encoding Name",
+			  "name": "encodingName",
+			  "type": "options",
+			  "options": [
+				{
+				  "label": "gpt2",
+				  "name": "gpt2"
+				},
+				{
+				  "label": "r50k_base",
+				  "name": "r50k_base"
+				},
+				{
+				  "label": "p50k_base",
+				  "name": "p50k_base"
+				},
+				{
+				  "label": "p50k_edit",
+				  "name": "p50k_edit"
+				},
+				{
+				  "label": "cl100k_base",
+				  "name": "cl100k_base"
+				}
+			  ],
+			  "default": "gpt2",
+			  "id": "tokenTextSplitter_0-input-encodingName-options"
+			},
+			{
+			  "label": "Chunk Size",
+			  "name": "chunkSize",
+			  "type": "number",
+			  "default": 1000,
+			  "optional": true,
+			  "id": "tokenTextSplitter_0-input-chunkSize-number"
+			},
+			{
+			  "label": "Chunk Overlap",
+			  "name": "chunkOverlap",
+			  "type": "number",
+			  "optional": true,
+			  "id": "tokenTextSplitter_0-input-chunkOverlap-number"
+			}
+		  ],
+		  "outputs": {},
+		  "outputAnchors": [
+			{
+			  "id": "tokenTextSplitter_0-output-tokenTextSplitter-TokenTextSplitter|TextSplitter|BaseDocumentTransformer|Runnable",
+			  "name": "tokenTextSplitter",
+			  "label": "TokenTextSplitter",
+			  "type": "TokenTextSplitter | TextSplitter | BaseDocumentTransformer | Runnable"
+			}
+		  ],
+		  "id": "tokenTextSplitter_0",
+		  "selected": false
+		},
+		"selected": false,
+		"positionAbsolute": {
+		  "x": -1377.8985466680444,
+		  "y": -938.3798019207447
+		},
+		"dragging": false
+	  },
+	  {
+		"width": 300,
+		"height": 656,
+		"id": "qdrant_0",
+		"position": {
+		  "x": -127.96262952829798,
+		  "y": -802.8106437057638
+		},
+		"type": "customNode",
+		"data": {
+		  "vectorStoreMethods": {},
+		  "label": "Qdrant",
+		  "name": "qdrant",
+		  "version": 1,
+		  "type": "Qdrant",
+		  "icon": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/vectorstores/Qdrant/qdrant.png",
+		  "category": "Vector Stores",
+		  "description": "Upsert embedded data and perform similarity search upon query using Qdrant, a scalable open source vector database written in Rust",
+		  "baseClasses": [
+			"Qdrant",
+			"VectorStoreRetriever",
+			"BaseRetriever"
+		  ],
+		  "badge": "NEW",
+		  "credential": "",
+		  "inputs": {
+			"document": [
+			  "{{github_0.data.instance}}"
+			],
+			"embeddings": "{{openAIEmbeddings_0.data.instance}}",
+			"qdrantServerUrl": "http://qdrant.qdrant.svc.cluster.local:6333",
+			"qdrantCollection": "tace-demo",
+			"qdrantVectorDimension": 1536,
+			"qdrantSimilarity": "Cosine",
+			"qdrantCollectionConfiguration": "",
+			"topK": "",
+			"qdrantFilter": ""
+		  },
+		  "outputs": {
+			"output": "retriever"
+		  },
+		  "filePath": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/vectorstores/Qdrant/Qdrant.js",
+		  "inputAnchors": [
+			{
+			  "label": "Document",
+			  "name": "document",
+			  "type": "Document",
+			  "list": true,
+			  "optional": true,
+			  "id": "qdrant_0-input-document-Document"
+			},
+			{
+			  "label": "Embeddings",
+			  "name": "embeddings",
+			  "type": "Embeddings",
+			  "id": "qdrant_0-input-embeddings-Embeddings"
+			}
+		  ],
+		  "inputParams": [
+			{
+			  "label": "Connect Credential",
+			  "name": "credential",
+			  "type": "credential",
+			  "description": "Only needed when using Qdrant cloud hosted",
+			  "optional": true,
+			  "credentialNames": [
+				"qdrantApi"
+			  ],
+			  "id": "qdrant_0-input-credential-credential"
+			},
+			{
+			  "label": "Qdrant Server URL",
+			  "name": "qdrantServerUrl",
+			  "type": "string",
+			  "placeholder": "http://localhost:6333",
+			  "id": "qdrant_0-input-qdrantServerUrl-string"
+			},
+			{
+			  "label": "Qdrant Collection Name",
+			  "name": "qdrantCollection",
+			  "type": "string",
+			  "id": "qdrant_0-input-qdrantCollection-string"
+			},
+			{
+			  "label": "Vector Dimension",
+			  "name": "qdrantVectorDimension",
+			  "type": "number",
+			  "default": 1536,
+			  "additionalParams": true,
+			  "id": "qdrant_0-input-qdrantVectorDimension-number"
+			},
+			{
+			  "label": "Similarity",
+			  "name": "qdrantSimilarity",
+			  "description": "Similarity measure used in Qdrant.",
+			  "type": "options",
+			  "default": "Cosine",
+			  "options": [
+				{
+				  "label": "Cosine",
+				  "name": "Cosine"
+				},
+				{
+				  "label": "Euclid",
+				  "name": "Euclid"
+				},
+				{
+				  "label": "Dot",
+				  "name": "Dot"
+				}
+			  ],
+			  "additionalParams": true,
+			  "id": "qdrant_0-input-qdrantSimilarity-options"
+			},
+			{
+			  "label": "Additional Collection Cofiguration",
+			  "name": "qdrantCollectionConfiguration",
+			  "description": "Refer to <a target=\"_blank\" href=\"https://qdrant.tech/documentation/concepts/collections\">collection docs</a> for more reference",
+			  "type": "json",
+			  "optional": true,
+			  "additionalParams": true,
+			  "id": "qdrant_0-input-qdrantCollectionConfiguration-json"
+			},
+			{
+			  "label": "Top K",
+			  "name": "topK",
+			  "description": "Number of top results to fetch. Default to 4",
+			  "placeholder": "4",
+			  "type": "number",
+			  "additionalParams": true,
+			  "optional": true,
+			  "id": "qdrant_0-input-topK-number"
+			},
+			{
+			  "label": "Qdrant Search Filter",
+			  "name": "qdrantFilter",
+			  "description": "Only return points which satisfy the conditions",
+			  "type": "json",
+			  "additionalParams": true,
+			  "optional": true,
+			  "id": "qdrant_0-input-qdrantFilter-json"
+			}
+		  ],
+		  "outputAnchors": [
+			{
+			  "name": "output",
+			  "label": "Output",
+			  "type": "options",
+			  "options": [
+				{
+				  "id": "qdrant_0-output-retriever-Qdrant|VectorStoreRetriever|BaseRetriever",
+				  "name": "retriever",
+				  "label": "Qdrant Retriever",
+				  "type": "Qdrant | VectorStoreRetriever | BaseRetriever"
+				},
+				{
+				  "id": "qdrant_0-output-vectorStore-Qdrant|VectorStore",
+				  "name": "vectorStore",
+				  "label": "Qdrant Vector Store",
+				  "type": "Qdrant | VectorStore"
+				}
+			  ],
+			  "default": "retriever"
+			}
+		  ],
+		  "id": "qdrant_0",
+		  "selected": false
+		},
+		"selected": false,
+		"positionAbsolute": {
+		  "x": -127.96262952829798,
+		  "y": -802.8106437057638
+		},
+		"dragging": false
+	  },
+	  {
+		"width": 300,
+		"height": 330,
+		"id": "RedisBackedChatMemory_0",
+		"position": {
+		  "x": -353.316500958377,
+		  "y": 485.0758806490095
+		},
+		"type": "customNode",
+		"data": {
+		  "label": "Redis-Backed Chat Memory",
+		  "name": "RedisBackedChatMemory",
+		  "version": 2,
+		  "type": "RedisBackedChatMemory",
+		  "icon": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/memory/RedisBackedChatMemory/redis.svg",
+		  "category": "Memory",
+		  "description": "Summarizes the conversation and stores the memory in Redis server",
+		  "baseClasses": [
+			"RedisBackedChatMemory",
+			"BaseChatMemory",
+			"BaseMemory"
+		  ],
+		  "credential": "907b3bb7-ebaf-4c3f-94ff-1e2eb89d88e4",
+		  "inputs": {
+			"sessionId": "",
+			"sessionTTL": "",
+			"memoryKey": "chat_history",
+			"windowSize": ""
+		  },
+		  "filePath": "/usr/local/lib/node_modules/flowise/node_modules/flowise-components/dist/nodes/memory/RedisBackedChatMemory/RedisBackedChatMemory.js",
+		  "inputAnchors": [],
+		  "inputParams": [
+			{
+			  "label": "Connect Credential",
+			  "name": "credential",
+			  "type": "credential",
+			  "optional": true,
+			  "credentialNames": [
+				"redisCacheApi",
+				"redisCacheUrlApi"
+			  ],
+			  "id": "RedisBackedChatMemory_0-input-credential-credential"
+			},
+			{
+			  "label": "Session Id",
+			  "name": "sessionId",
+			  "type": "string",
+			  "description": "If not specified, a random id will be used. Learn <a target=\"_blank\" href=\"https://docs.flowiseai.com/memory/long-term-memory#ui-and-embedded-chat\">more</a>",
+			  "default": "",
+			  "additionalParams": true,
+			  "optional": true,
+			  "id": "RedisBackedChatMemory_0-input-sessionId-string"
+			},
+			{
+			  "label": "Session Timeouts",
+			  "name": "sessionTTL",
+			  "type": "number",
+			  "description": "Omit this parameter to make sessions never expire",
+			  "additionalParams": true,
+			  "optional": true,
+			  "id": "RedisBackedChatMemory_0-input-sessionTTL-number"
+			},
+			{
+			  "label": "Memory Key",
+			  "name": "memoryKey",
+			  "type": "string",
+			  "default": "chat_history",
+			  "additionalParams": true,
+			  "id": "RedisBackedChatMemory_0-input-memoryKey-string"
+			},
+			{
+			  "label": "Window Size",
+			  "name": "windowSize",
+			  "type": "number",
+			  "description": "Window of size k to surface the last k back-and-forth to use as memory.",
+			  "additionalParams": true,
+			  "optional": true,
+			  "id": "RedisBackedChatMemory_0-input-windowSize-number"
+			}
+		  ],
+		  "outputs": {},
+		  "outputAnchors": [
+			{
+			  "id": "RedisBackedChatMemory_0-output-RedisBackedChatMemory-RedisBackedChatMemory|BaseChatMemory|BaseMemory",
+			  "name": "RedisBackedChatMemory",
+			  "label": "RedisBackedChatMemory",
+			  "type": "RedisBackedChatMemory | BaseChatMemory | BaseMemory"
+			}
+		  ],
+		  "id": "RedisBackedChatMemory_0",
+		  "selected": false
+		},
+		"selected": false,
+		"positionAbsolute": {
+		  "x": -353.316500958377,
+		  "y": 485.0758806490095
+		},
+		"dragging": false
+	  }
+	],
+	"edges": [
+	  {
+		"source": "chatOpenAI_0",
+		"sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+		"target": "openAIFunctionAgent_0",
+		"targetHandle": "openAIFunctionAgent_0-input-model-BaseChatModel",
+		"type": "buttonedge",
+		"id": "chatOpenAI_0-chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable-openAIFunctionAgent_0-openAIFunctionAgent_0-input-model-BaseChatModel"
+	  },
+	  {
+		"source": "customTool_0",
+		"sourceHandle": "customTool_0-output-customTool-CustomTool|Tool|StructuredTool|Runnable",
+		"target": "openAIFunctionAgent_0",
+		"targetHandle": "openAIFunctionAgent_0-input-tools-Tool",
+		"type": "buttonedge",
+		"id": "customTool_0-customTool_0-output-customTool-CustomTool|Tool|StructuredTool|Runnable-openAIFunctionAgent_0-openAIFunctionAgent_0-input-tools-Tool"
+	  },
+	  {
+		"source": "retrieverTool_0",
+		"sourceHandle": "retrieverTool_0-output-retrieverTool-RetrieverTool|DynamicTool|Tool|StructuredTool|Runnable",
+		"target": "openAIFunctionAgent_0",
+		"targetHandle": "openAIFunctionAgent_0-input-tools-Tool",
+		"type": "buttonedge",
+		"id": "retrieverTool_0-retrieverTool_0-output-retrieverTool-RetrieverTool|DynamicTool|Tool|StructuredTool|Runnable-openAIFunctionAgent_0-openAIFunctionAgent_0-input-tools-Tool"
+	  },
+	  {
+		"source": "tokenTextSplitter_0",
+		"sourceHandle": "tokenTextSplitter_0-output-tokenTextSplitter-TokenTextSplitter|TextSplitter|BaseDocumentTransformer|Runnable",
+		"target": "github_0",
+		"targetHandle": "github_0-input-textSplitter-TextSplitter",
+		"type": "buttonedge",
+		"id": "tokenTextSplitter_0-tokenTextSplitter_0-output-tokenTextSplitter-TokenTextSplitter|TextSplitter|BaseDocumentTransformer|Runnable-github_0-github_0-input-textSplitter-TextSplitter"
+	  },
+	  {
+		"source": "github_0",
+		"sourceHandle": "github_0-output-github-Document",
+		"target": "qdrant_0",
+		"targetHandle": "qdrant_0-input-document-Document",
+		"type": "buttonedge",
+		"id": "github_0-github_0-output-github-Document-qdrant_0-qdrant_0-input-document-Document"
+	  },
+	  {
+		"source": "openAIEmbeddings_0",
+		"sourceHandle": "openAIEmbeddings_0-output-openAIEmbeddings-OpenAIEmbeddings|Embeddings",
+		"target": "qdrant_0",
+		"targetHandle": "qdrant_0-input-embeddings-Embeddings",
+		"type": "buttonedge",
+		"id": "openAIEmbeddings_0-openAIEmbeddings_0-output-openAIEmbeddings-OpenAIEmbeddings|Embeddings-qdrant_0-qdrant_0-input-embeddings-Embeddings"
+	  },
+	  {
+		"source": "qdrant_0",
+		"sourceHandle": "qdrant_0-output-retriever-Qdrant|VectorStoreRetriever|BaseRetriever",
+		"target": "retrieverTool_0",
+		"targetHandle": "retrieverTool_0-input-retriever-BaseRetriever",
+		"type": "buttonedge",
+		"id": "qdrant_0-qdrant_0-output-retriever-Qdrant|VectorStoreRetriever|BaseRetriever-retrieverTool_0-retrieverTool_0-input-retriever-BaseRetriever"
+	  },
+	  {
+		"source": "RedisBackedChatMemory_0",
+		"sourceHandle": "RedisBackedChatMemory_0-output-RedisBackedChatMemory-RedisBackedChatMemory|BaseChatMemory|BaseMemory",
+		"target": "openAIFunctionAgent_0",
+		"targetHandle": "openAIFunctionAgent_0-input-memory-BaseChatMemory",
+		"type": "buttonedge",
+		"id": "RedisBackedChatMemory_0-RedisBackedChatMemory_0-output-RedisBackedChatMemory-RedisBackedChatMemory|BaseChatMemory|BaseMemory-openAIFunctionAgent_0-openAIFunctionAgent_0-input-memory-BaseChatMemory"
+	  }
+	],
+	"viewport": {
+	  "x": 689.1696738534183,
+	  "y": 294.07233322340323,
+	  "zoom": 0.3607723548423762
+	}
+  }
